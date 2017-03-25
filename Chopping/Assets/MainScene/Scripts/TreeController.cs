@@ -8,15 +8,18 @@ public class TreeController : MonoBehaviour
     #region visible in inspector 
     [Header("Parameters")]
     [Range(1,60)]
+    [Tooltip("Count of max wood tree can contain(age depends on it too)")]
     [SerializeField]
     private int MaxWoodCapacity;
 
     [Range(0.01f, 2.0f)]
     [SerializeField]
+    [Tooltip("Time in seconds beetween steps of growing")]
     private float GrowTimeStepSize;
 
     [Range(1, 5)]
     [SerializeField]
+    [Tooltip("Count of wood transfered in one chop")]
     private int ChopCount;
 
     [Header("References")]
@@ -48,7 +51,10 @@ public class TreeController : MonoBehaviour
     void grow() {
         age++;
         wood++;
-        float size = (float)age / (float)MaxWoodCapacity;        
+        setSize((float)age / (float)MaxWoodCapacity);
+    }
+
+    private void setSize(float size) {
         transform.localScale = new Vector3(size, size, size);
     }
 
@@ -70,10 +76,21 @@ public class TreeController : MonoBehaviour
     /// <returns>count of chopped wood</returns>
     public int Chop() {
         growing = false;
-        leafsParticlesEmiter.Play();
+        setSize((float)wood / (float)MaxWoodCapacity);
         transform.DOShakeRotation(0.2f, new Vector3(7f, 0f, 7f), 40, 10, false).OnComplete(tweenToZeroRotation);
+        leafsParticlesEmiter.Play();
         wood -= ChopCount;
+        checkForEmptyTree();
         return ChopCount;
+    }
+    
+
+    void checkForEmptyTree() {
+        if(wood <= 0) {
+            Destroy(gameObject, 1.0f);
+            Vector3 pos = transform.position;
+            pos = new Vector3(pos.x, -100f, pos.y);
+        }
     }
 
     void tweenToZeroRotation() {

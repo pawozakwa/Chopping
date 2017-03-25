@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    #region visible in inspector
+
+
+    #endregion
+
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
@@ -13,4 +18,6 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
 		
 	}
+
+
 }
