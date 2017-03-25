@@ -26,6 +26,9 @@ public class HouseController : MonoBehaviour {
     [SerializeField]
     PartCostPair[] houseSteps;
 
+    [SerializeField]
+    ParticleSystem clickParticles;
+
     public PartCostPair[] HouseSteps {
         get { return houseSteps; }
     }
@@ -36,7 +39,7 @@ public class HouseController : MonoBehaviour {
 
     #endregion
 
-    bool building;
+    bool building = false;
     int actualStep = 0;
 
     public int NextStep {
@@ -46,11 +49,16 @@ public class HouseController : MonoBehaviour {
 
     public void initUpgrade() {
         if (building) return;
+        building = true;
+        clickParticles.Play();
         actualStep++;
         houseSteps[actualStep].build.transform.DOMoveY(0.0f, buildingTime).OnComplete(finishBuildStep);
     }
 
     public void finishBuildStep() {
+        if(NextStep > houseSteps.Length - 1) {
+
+        }
         building = false;
     }
 
@@ -67,7 +75,7 @@ public class HouseController : MonoBehaviour {
     }
 
     void checkForDebugInput() {
-        if (Input.GetKey("x")) {
+        if (Input.GetKeyDown("x")) {
             initUpgrade();
         }
     }
