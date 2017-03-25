@@ -6,25 +6,55 @@ using System;
 public class GameManager : MonoBehaviour {
 
     private static GameManager instance;
+    #region visible in inspector
+    [Header("References")]
+
+    [SerializeField]
+    private GameObject winScreen;
+
+    [SerializeField]
+    private GameObject loseScreen;
+
+    [SerializeField]
+    private GameObject Player;
+
+    #endregion
+
 
     bool gameStarted;
+    bool gameFinished;
+
+    GameManager() {
+        instance = this;
+    }
 
     public static GameManager Instance {
         get {
-            if (instance = null)
-                instance = Instantiate(Resources.Load("GameManager") as GameManager);
             return instance;
         }
     }
 
+    public bool GameStarted {
+        get {
+            return gameStarted;
+        }
+    }
+
+    public void StartGame() {
+        gameStarted = true;
+        gameFinished = false;
+    }
+
     public void GameWon() {
+        if (gameFinished) return;
         print("ZWYCIĘSTWO!");
-        throw new NotImplementedException();
+        winScreen.SetActive(true);
     }
 
     public void GameLost() {
+        if (gameFinished) return;
         print("PRZEGRANA!");
-        throw new NotImplementedException();
+        loseScreen.SetActive(true);
     }
 
 

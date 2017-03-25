@@ -21,11 +21,12 @@ public class CampfireController : MonoBehaviour {
     [Header("References")]
     [SerializeField]
     private GameObject[] woodParts;
-    [SerializeField]
-    private ParticleSystem firstFire;
 
     [SerializeField]
     private Light fireLight;
+
+    [SerializeField]
+    private AudioSource fireSound;
     #endregion
 
     float countOfWood;
@@ -41,38 +42,43 @@ public class CampfireController : MonoBehaviour {
 	}
 
     public void SetAFire() {
-        firstFire.Play();
-        StartCoroutine(fireCoroutine());
+        GameManager.Instance.StartGame();
         burning = true;
         fireLight.gameObject.SetActive(true);
+        fireSound.Play();
+        StartCoroutine(fireCoroutine());
     }
 
     public void AddWood(int wood) {
         countOfWood += wood;
+        if (!burning) {
+            SetAFire();
+        }
         updateState();
     }
 
     void updateState() {
         int fireLevel = (int)((float)countOfWood / (float)WoodPerLevel);
-        if (countOfWood > 0 && fireLevel == 0) fireLevel = 0;
-        for (int i = 0; i < fireLevel && i < woodParts.Length; i++) {
-                woodParts[i].SetActive(true);
+        if (countOfWood > 0 && fireLevel == 0) {
+            fireLevel = 0;
+            fireSound.Stop();
+        }
+        for (int i = 0; i < woodParts.Length; i++) {
+                woodParts[i].SetActive(i < fireLevel);
         }
         fireLight.range = fireLevel * 10;
     }
 
     IEnumerator fireCoroutine() {
         while(countOfWood > 0) {
-            yield return new WaitForSeconds(TimeOfBurning);
+            yield return new WaitForSeconds(TimeOfBurning);            
             countOfWood--;
             updateState();
         }
         updateState();
         GameManager.Instance.GameLost();
     }
-
-
-	
+    	
 	// Update is called once per frame
 	void Update () {
 #if UNITY_EDITOR

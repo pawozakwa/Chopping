@@ -29,6 +29,9 @@ public class HouseController : MonoBehaviour {
     [SerializeField]
     ParticleSystem clickParticles;
 
+    [SerializeField]
+    AudioSource buildSound;
+
     public PartCostPair[] HouseSteps {
         get { return houseSteps; }
     }
@@ -45,21 +48,31 @@ public class HouseController : MonoBehaviour {
     public int NextStep {
         get { return actualStep + 1; }
     }
-    
 
-    public void initUpgrade() {
-        if (building) return;
+    public int Step {
+        get { return actualStep; }
+    }
+
+
+    public bool initUpgrade() {
+        if (building) return false;
         building = true;
         clickParticles.Play();
         actualStep++;
         houseSteps[actualStep].build.transform.DOMoveY(0.0f, buildingTime).OnComplete(finishBuildStep);
+        buildSound.Play();
+        return true;
     }
 
     public void finishBuildStep() {
         if(NextStep > houseSteps.Length - 1) {
-
+            GameManager.Instance.GameWon();
         }
         building = false;
+    }
+
+    public bool canBuild(int countOfOwnedWood) {
+        return (NextStep < houseSteps.Length &&           houseSteps[NextStep].cost <= countOfOwnedWood);        
     }
 
     // Use this for initialization
