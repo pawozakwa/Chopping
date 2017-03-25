@@ -66,7 +66,9 @@ public class CampfireController : MonoBehaviour {
             yield return new WaitForSeconds(TimeOfBurning);
             countOfWood--;
             updateState();
-        }        
+        }
+        updateState();
+        GameManager.Instance.GameLost();
     }
 
 
