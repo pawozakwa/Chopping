@@ -7,6 +7,7 @@ public class TreeController : MonoBehaviour
 {
     #region visible in inspector 
     [Header("Parameters")]
+
     [Range(1,60)]
     [Tooltip("Count of max wood tree can contain(age depends on it too)")]
     [SerializeField]
@@ -59,7 +60,7 @@ public class TreeController : MonoBehaviour
     }
 
     void checkForDebugInput() {
-        if (Input.GetKey("c")) {
+        if (Input.GetKeyDown("c")) {
             Chop();
         }
     }
